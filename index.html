@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPF Trend Analysis</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>JMFI Non-Performing Financing (NPF) Trend Analysis - Collection</h1>
+  </header>
+
+  <div class="legend-strip">
+    <div class="npf-scale">
+      <span class="scale-label">NPF</span>
+      <span>0.0%</span>
+      <span class="scale-bar"></span>
+      <span>5.0%</span>
+    </div>
+    <div class="threshold">Threshold NPF OJK : 5% | Industry Average (Aug 2024) : 2.66%</div>
+  </div>
+
+  <div class="layout">
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar">
+      <div class="panel-title">Control</div>
+
+      <div class="side-label">Navigation</div>
+      <nav class="nav">
+        <a href="#region" class="nav-btn active">By Region, CG &amp; Branch</a>
+        <a href="#summary" class="nav-btn">By Product</a>
+        <a href="#summary" class="nav-btn">By Dealer</a>
+        <a href="#summary" class="nav-btn">By Debtor</a>
+        <a href="#collector" class="nav-btn">By Field Collector</a>
+        <a href="#summary" class="nav-btn">By Credit Score (NB Only)</a>
+      </nav>
+
+      <div class="side-label">Filters</div>
+      <form class="filters" id="filters">
+        <label>Collection Region
+          <select id="f-region"><option>(All)</option></select>
+        </label>
+        <label>Collection Group
+          <select><option>(All)</option></select>
+        </label>
+        <label>Collection Branch
+          <select><option>(All)</option></select>
+        </label>
+        <label>Group Product
+          <select><option>(All)</option><option>New Car</option><option>Used Car</option><option>Motorcycle</option></select>
+        </label>
+        <label>Cat Product
+          <select><option>(All)</option><option>Consumer</option><option>Commercial</option></select>
+        </label>
+        <label>Product
+          <select><option>(All)</option></select>
+        </label>
+        <label>Period
+          <select><option>Oct 2025 – Aug 2026</option></select>
+        </label>
+      </form>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <main class="main">
+
+      <!-- SUMMARY -->
+      <section id="summary">
+        <div class="panel-title">Summary</div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>%NPF, Amount 90+, OSP / Month</h2>
+            <small>(Amount 90+ and OSP in Billion)</small>
+          </div>
+          <div class="scroll-x">
+            <table class="heat heat-summary" id="summary-table"></table>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="card-head">
+            <h2>Amount 90+, OSP / Month</h2>
+            <small>(Amount 90+ and OSP in Billion)</small>
+          </div>
+          <div class="chart-row">
+            <div class="chart" id="combo-chart"></div>
+            <div class="chart-legend">
+              <div class="legend-title">Measure Names</div>
+              <div><i style="background:var(--red)"></i>90+</div>
+              <div><i style="background:var(--green)"></i>OSP</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REGION / GROUP / BRANCH -->
+      <section id="region">
+        <div class="panel-title">By Collection Region, Group &amp; Branch</div>
+
+        <div class="card chart-card">
+          <div class="card-head">
+            <h2>Collection Region - %NPF / Month</h2>
+            <small>(Amount 90+ and OSP in Billion)</small>
+          </div>
+          <div class="chart-row">
+            <div class="chart" id="region-chart"></div>
+            <div class="chart-legend" id="region-legend">
+              <div class="legend-title">Nama Regional</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-head">
+              <h2>Collection Region - %NPF, Amount 90+, OSP / Month</h2>
+              <small>(Amount 90+ and OSP in Billion)</small>
+            </div>
+            <div class="scroll-x scroll-y"><table class="heat" id="region-table"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h2>Collection Group - %NPF, Amount 90+, OSP / Month</h2>
+              <small>(Amount 90+ and OSP in Billion)</small>
+            </div>
+            <div class="scroll-x scroll-y"><table class="heat" id="group-table"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h2>Collection Branch - %NPF, Amount 90+, OSP / Month</h2>
+              <small>(Amount 90+ and OSP in Million)</small>
+            </div>
+            <div class="scroll-x scroll-y"><table class="heat" id="branch-table"></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FIELD COLLECTOR -->
+      <section id="collector">
+        <div class="panel-title">By Field Collector</div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Field Collector - %NPF, Amount 90+, OSP / Month</h2>
+            <small>(Amount 90+ and OSP in Million)</small>
+          </div>
+          <div class="scroll-x scroll-y"><table class="heat" id="fc-table"></table></div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="card-head">
+            <h2>Field Collector - Contribution in Amount 90+ / Month</h2>
+            <small class="hint">Please filter by Branch to view a more detailed and comprehensive chart.</small>
+          </div>
+          <div class="chart-row">
+            <div class="chart" id="stack-chart"></div>
+            <div class="chart-legend" id="fc-legend">
+              <div class="legend-title">FC EmployeeName</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Field Collector - Performance (Latest Month)</h2>
+            <small>(Amount 90+ and OSP in Million)</small>
+            <small class="hint">Can be sorted by Amount 90+, OSP, and %NPF</small>
+          </div>
+          <div class="perf-sort">
+            Sort by:
+            <button data-sort="amt" class="active">Amount 90+</button>
+            <button data-sort="osp">OSP</button>
+            <button data-sort="npf">%NPF</button>
+          </div>
+          <div class="perf" id="perf"></div>
+        </div>
+      </section>
+
+      <footer class="foot">Data shown is illustrative sample data. Last refreshed: Aug 2026.</footer>
+    </main>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
