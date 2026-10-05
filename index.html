@@ -27,47 +27,51 @@
       <div class="panel-title">Control</div>
 
       <div class="side-label">Navigation</div>
-      <nav class="nav">
-        <a href="#region" class="nav-btn active">By Region, CG &amp; Branch</a>
-        <a href="#summary" class="nav-btn">By Product</a>
-        <a href="#summary" class="nav-btn">By Dealer</a>
-        <a href="#summary" class="nav-btn">By Debtor</a>
-        <a href="#collector" class="nav-btn">By Field Collector</a>
-        <a href="#summary" class="nav-btn">By Credit Score (NB Only)</a>
+      <nav class="nav" aria-label="Dashboard views">
+        <button type="button" class="nav-btn" data-view="region">By Region, CG &amp; Branch</button>
+        <button type="button" class="nav-btn" data-view="product">By Product</button>
+        <button type="button" class="nav-btn" disabled>By Dealer <span class="soon">Soon</span></button>
+        <button type="button" class="nav-btn" disabled>By Debtor <span class="soon">Soon</span></button>
+        <button type="button" class="nav-btn" disabled>By Credit Score (NB Only) <span class="soon">Soon</span></button>
       </nav>
 
       <div class="side-label">Filters</div>
       <form class="filters" id="filters">
-        <label>Collection Region
-          <select id="f-region"><option>(All)</option></select>
+        <label for="f-region">Collection Region
+          <select id="f-region"><option value="">(All)</option></select>
         </label>
-        <label>Collection Group
-          <select><option>(All)</option></select>
+        <label for="f-cg">Collection Group
+          <select id="f-cg"><option value="">(All)</option></select>
         </label>
-        <label>Collection Branch
-          <select><option>(All)</option></select>
+        <label for="f-branch">Collection Branch
+          <select id="f-branch"><option value="">(All)</option></select>
         </label>
-        <label>Group Product
-          <select><option>(All)</option><option>New Car</option><option>Used Car</option><option>Motorcycle</option></select>
+        <label for="f-group">Group Product
+          <select id="f-group"><option value="">(All)</option></select>
         </label>
-        <label>Cat Product
-          <select><option>(All)</option><option>Consumer</option><option>Commercial</option></select>
+        <label for="f-cat">Cat Product
+          <select id="f-cat"><option value="">(All)</option></select>
         </label>
-        <label>Product
-          <select><option>(All)</option></select>
+        <label for="f-product">Product
+          <select id="f-product"><option value="">(All)</option></select>
         </label>
-        <label>Period
-          <select><option>Oct 2025 – Aug 2026</option></select>
+        <label for="f-supplier">Supplier Name
+          <select id="f-supplier"><option value="">(All)</option></select>
         </label>
+        <button type="reset" class="reset-btn" id="reset">Reset filters</button>
       </form>
     </aside>
 
     <!-- ============ MAIN ============ -->
     <main class="main">
 
-      <!-- SUMMARY -->
+      <div class="filterbar" id="filterbar" hidden></div>
+
+      <!-- SUMMARY (shared by every view) -->
       <section id="summary">
         <div class="panel-title">Summary</div>
+
+        <div class="kpis" id="kpis"></div>
 
         <div class="card">
           <div class="card-head">
@@ -79,7 +83,7 @@
           </div>
         </div>
 
-        <div class="card chart-card">
+        <div class="card chart-card" data-view="region">
           <div class="card-head">
             <h2>Amount 90+, OSP / Month</h2>
             <small>(Amount 90+ and OSP in Billion)</small>
@@ -95,8 +99,8 @@
         </div>
       </section>
 
-      <!-- REGION / GROUP / BRANCH -->
-      <section id="region">
+      <!-- ================= VIEW: REGION ================= -->
+      <section id="region-section" data-view="region">
         <div class="panel-title">By Collection Region, Group &amp; Branch</div>
 
         <div class="card chart-card">
@@ -106,9 +110,7 @@
           </div>
           <div class="chart-row">
             <div class="chart" id="region-chart"></div>
-            <div class="chart-legend" id="region-legend">
-              <div class="legend-title">Nama Regional</div>
-            </div>
+            <div class="chart-legend" id="region-legend"></div>
           </div>
         </div>
 
@@ -137,8 +139,7 @@
         </div>
       </section>
 
-      <!-- FIELD COLLECTOR -->
-      <section id="collector">
+      <section id="collector" data-view="region">
         <div class="panel-title">By Field Collector</div>
 
         <div class="card">
@@ -155,10 +156,8 @@
             <small class="hint">Please filter by Branch to view a more detailed and comprehensive chart.</small>
           </div>
           <div class="chart-row">
-            <div class="chart" id="stack-chart"></div>
-            <div class="chart-legend" id="fc-legend">
-              <div class="legend-title">FC EmployeeName</div>
-            </div>
+            <div class="chart" id="fc-stack"></div>
+            <div class="chart-legend" id="fc-legend"></div>
           </div>
         </div>
 
@@ -168,13 +167,128 @@
             <small>(Amount 90+ and OSP in Million)</small>
             <small class="hint">Can be sorted by Amount 90+, OSP, and %NPF</small>
           </div>
-          <div class="perf-sort">
+          <div class="perf-sort" role="group" aria-label="Sort collectors">
             Sort by:
-            <button data-sort="amt" class="active">Amount 90+</button>
-            <button data-sort="osp">OSP</button>
-            <button data-sort="npf">%NPF</button>
+            <button type="button" data-sort="amt" class="active">Amount 90+</button>
+            <button type="button" data-sort="osp">OSP</button>
+            <button type="button" data-sort="npf">%NPF</button>
           </div>
           <div class="perf" id="perf"></div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW: PRODUCT ================= -->
+      <section id="product-section" data-view="product" hidden>
+        <div class="panel-title">Summary</div>
+
+        <div class="donut-grid">
+          <div class="card">
+            <div class="card-head">
+              <h2>Product - Contribution in Amount OSP (Latest Month)</h2>
+              <small>(Inner ring: Cat Product · Outer ring: Product)</small>
+            </div>
+            <div class="chart" id="donut-osp"></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h2>Product - Contribution in Amount 90+ (Latest Month)</h2>
+              <small>(Inner ring: Cat Product · Outer ring: Product)</small>
+            </div>
+            <div class="chart" id="donut-amt"></div>
+          </div>
+          <div class="card share-card">
+            <div class="card-head">
+              <h2>Group Product / Cat Product / Product</h2>
+              <small>(Share of latest month, %)</small>
+            </div>
+            <div class="scroll-x"><table class="share" id="share-table"></table></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="col">
+            <div class="panel-title">By Product Category</div>
+            <div class="card chart-card">
+              <div class="card-head">
+                <h2>Product Category - %NPF / Month</h2>
+                <small>(Amount 90+ and OSP in Billion)</small>
+              </div>
+              <div class="chart pad" id="cat-chart"></div>
+              <div class="legend-bottom" id="cat-legend"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h2>Product Category - %NPF, Amount 90+, OSP / Month</h2>
+                <small>(Amount 90+ and OSP in Billion)</small>
+              </div>
+              <div class="scroll-x scroll-y"><table class="heat" id="cat-table"></table></div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="panel-title">By Product</div>
+            <div class="card chart-card">
+              <div class="card-head">
+                <h2>Product - %NPF / Month</h2>
+                <small>(Amount 90+ and OSP in Billion)</small>
+              </div>
+              <div class="chart pad" id="prod-chart"></div>
+              <div class="legend-bottom" id="prod-legend"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h2>Product - %NPF, Amount 90+, OSP / Month</h2>
+                <small>(Amount 90+ and OSP in Billion)</small>
+              </div>
+              <div class="scroll-x scroll-y"><table class="heat" id="prod-table"></table></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="col">
+            <div class="panel-title">By Brand</div>
+            <div class="card">
+              <div class="card-head">
+                <h2>Brand - %NPF, Amount 90+, OSP / Month</h2>
+                <small>(Amount 90+ and OSP in Million)</small>
+              </div>
+              <div class="scroll-x scroll-y"><table class="heat" id="brand-table"></table></div>
+            </div>
+            <div class="card chart-card">
+              <div class="card-head">
+                <h2>Brand - Contribution in Amount 90+ / Month</h2>
+                <small>(Amount 90+ and OSP in Million)</small>
+                <small class="hint">Please filter by Product to view a more detailed and comprehensive chart.</small>
+              </div>
+              <div class="chart-row">
+                <div class="chart" id="brand-stack"></div>
+                <div class="chart-legend" id="brand-legend"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="panel-title">By Merk</div>
+            <div class="card">
+              <div class="card-head">
+                <h2>Merk - %NPF, Amount 90+, OSP / Month</h2>
+                <small>(Amount 90+ and OSP in Million)</small>
+              </div>
+              <div class="scroll-x scroll-y"><table class="heat" id="merk-table"></table></div>
+            </div>
+            <div class="card chart-card">
+              <div class="card-head">
+                <h2>Merk - Contribution in Amount 90+ / Month</h2>
+                <small>(Amount 90+ and OSP in Million)</small>
+                <small class="hint">Please filter by Brand to view a more detailed and comprehensive chart.</small>
+              </div>
+              <div class="chart-row">
+                <div class="chart" id="merk-stack"></div>
+                <div class="chart-legend" id="merk-legend"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
